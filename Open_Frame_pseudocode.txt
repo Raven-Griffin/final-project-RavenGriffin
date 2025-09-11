@@ -1,0 +1,19 @@
+Function Title: open_reading_frame
+
+
+Description: This script will take in user input for the positions of the open reading frame and output the subsequence of that frame.
+
+
+Input 1: Starting position of the open frame
+Input 2: Ending position of the open frame
+
+(potential) Output: Error message      
+Output: The subsequence of the frame
+
+Process: 
+Step 1: Take in user inputs for the starting position of the open frame. Take in user input for the ending position of the open frame.
+Step 2: Check if the user input is valid, must be a positive integer
+Step 3 Check if the user input is greater than the 1-length of the sequence. If invalid give an error message
+Step 4: Get the subsequence
+Step 5: Return it to the user
+
