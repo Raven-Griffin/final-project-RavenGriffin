@@ -201,3 +201,77 @@ def build_tree_dict_from_kmers(
                 internal_nodes[current_node] = [label1, label2]
             
         return terminals_dic, internal_nodes
+        
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+
+
+class KmerAnalyzer:
+    def __init__(self, kmer_dict):
+        self.dict = kmer_dict
+        self.all_kmers = None
+        self.row_names = None
+        self.col_names = None
+
+    def count_kmers(self):
+        overall = {}
+        global_counts = {}
+
+        for seq_id, kmers in self.dict.items():
+            per_seq = {}
+            for k in kmers:
+                per_seq[k] = per_seq.get(k, 0) + 1
+                global_counts[k] = global_counts.get(k, 0) + 1
+
+            sorted_seq = sorted(per_seq.items(), key=lambda x: x[1], reverse=True)
+            overall[seq_id] = sorted_seq
+
+        self.all_kmers = {
+            "per_sequence": overall,
+            "global": sorted(global_counts.items(), key=lambda x: x[1], reverse=True)
+        }
+
+    def build_kmer_matrix(self, top_k=8):
+        per_seq = self.all_kmers["per_sequence"]
+        global_sorted = self.all_kmers["global"]
+
+        top_kmers = [k for (k, _) in global_sorted[:top_k]]
+
+        matrix = []
+        row_names = []
+
+        for seq_id, kmer_list in per_seq.items():
+            d = dict(kmer_list)
+            row = [d.get(k, 0) for k in top_kmers]
+            matrix.append(row)
+            row_names.append(seq_id)
+
+        return row_names, top_kmers, np.array(matrix)
+
+    def plot_kmer_heatmap(self, top_k=8, out_path="results/kmer_heatmap.png"):
+        self.row_names, self.col_names, M = self.build_kmer_matrix(top_k)
+
+        plt.figure(figsize=(12, 6))
+        cmap = LinearSegmentedColormap.from_list(
+            "purple_indigo", ["#C8A2C8", "#7a5195", "#4B0082"]
+        )
+        norm = plt.Normalize(vmin=0, vmax=M.max())
+        plt.imshow(M, aspect='auto', cmap=cmap, norm=norm)
+
+        cbar = plt.colorbar(label="k-mer frequency")
+        ticks = list(range(0, int(M.max()) + 1))
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels([str(t) for t in ticks])
+
+        plt.xticks(range(len(self.col_names)), self.col_names, rotation=90)
+        plt.yticks(range(len(self.row_names)), self.row_names)
+        plt.title(f"Top {top_k} k-mer Frequency Heatmap")
+        plt.tight_layout()
+        
+        plt.savefig(out_path, dpi=300)
+        print(f"[Info]Saved heatmap PNG → {out_path}")
+        
+        plt.close()
+       

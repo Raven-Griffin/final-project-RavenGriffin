@@ -14,7 +14,7 @@ Example
 ##
 # MODULES
 ##
-
+import pandas as pd
 import argparse, sys, re
 import numpy as np
 from Bio import SeqIO
@@ -27,6 +27,10 @@ from ratez.bio import read_aln
 from ratez.pd import analyze
 from kmers.kmers import extract_kmers
 from kmers.kmers import build_tree_dict_from_kmers
+from ratez.pd import plot_rates
+from kmers.kmers import KmerAnalyzer
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 ##
 # AUXILIARY FUNCTIONS
@@ -331,6 +335,7 @@ class RatesCalc:
 		self.rates, self.avg_mismatch, self.avg_indel = analyze(self.data, self.reference)
 
 
+
 def main() -> None:
 	"""
 	Execute the complete alignment workflow.
@@ -372,6 +377,17 @@ def main() -> None:
 		for name in (head1, head2):
 			if name not in history:
 				history.append(name)
+				
+	from kmers.kmers import KmerAnalyzer
+
+	# Build analyzer from extracted kmers
+	kmer_analyzer = KmerAnalyzer(runner.kmers)
+
+	# Count kmers
+	kmer_analyzer.count_kmers()
+
+	# Plot heatmap
+	kmer_analyzer.plot_kmer_heatmap(top_k=8)
 
 	# Write final alignment to disk
 	runner.write()
@@ -380,6 +396,35 @@ def main() -> None:
 	calc = RatesCalc(aln_file=args.output, reference=args.reference)
 	calc.read()
 	calc.calc()
+	print("\n[INFO] Computing mutation rates...")
 
+	# Use the alignment dictionary already read by RatesCalc
+	aln_dict = calc.data
+
+	# Compute mutation rates vs the chosen reference
+	
+	mut_table, avg_mismatch, avg_indel = analyze(aln_dict, args.reference)
+
+
+	# Convert to DataFrame
+	df = pd.DataFrame(mut_table)
+
+	print("\n[Mutation Rates]")
+	print(df)
+
+	# Save CSV into results/
+	df.to_csv("results/mutation_rates.csv", index=False)
+	print("[INFO] Saved results/mutation_rates.csv")
+
+	# Save PNG plot into results/
+	plot_rates(df, out_path="results/mutation_rates.png")
+	print("[INFO] Saved results/mutation_rates.png")
+	
+	kmer_analyzer = KmerAnalyzer(runner.kmers)
+	kmer_analyzer.count_kmers()
+
+	
+	
+    
 if __name__ == "__main__":
 	main()

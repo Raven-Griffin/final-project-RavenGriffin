@@ -108,3 +108,35 @@ Average indel rate per position: {avg_indel:.4f}
 """)
 
 	return result_df, avg_mismatch, avg_indel
+	
+import matplotlib.pyplot as plt
+
+def plot_rates(result_df, out_path="mutation_rates.png"):
+    """
+    Plot mutation mismatch and indel rates and save as a PNG.
+
+    Parameters
+    ----------
+    result_df : pd.DataFrame
+        DataFrame containing Position, MismatchRate, IndelRate.
+    out_path : str
+        File path to save the PNG output.
+    """
+    positions = result_df["Position"]
+    mismatch = result_df["MismatchRate"]
+    indel = result_df["IndelRate"]
+
+    plt.figure(figsize=(12, 5))
+    plt.plot(positions, mismatch, label="Mismatch Rate", linewidth=2)
+    plt.plot(positions, indel, label="Indel Rate", linewidth=2)
+
+    plt.xlabel("Position")
+    plt.ylabel("Rate")
+    plt.title("Mutation Rates per Position")
+    plt.ylim(0, 1)
+    plt.legend()
+    plt.tight_layout()
+
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    print(f"[INFO] Saved plot to {out_path}")
