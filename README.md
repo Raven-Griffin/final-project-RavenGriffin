@@ -58,7 +58,69 @@ Using functions from newu3.num
 - init_mat() - innitalizes scoring matrix
 - fill_matrix() - dynamic programming score fill
 - trace_matrix() - traceback to get optimal alignment
-- 
+  - pairwise alignments along the guide tree
+  - gap propagation across previously aligned sequences (patch)
+  - writing the final MSA to out.fasta
+
+### 3.5 Mutation Rate Calculation
+Using ratez.pd.analyze():
+- Compares all seuences to a reference ID
+- Computes per-position:
+  - Mismatch rate
+  - Indel rate
+- Compute average mismatch and average indel rates acros positions
+Results are saved to mutation_rates.csv
+
+### 3.6 Kmer Heatmap
+Using KmerAnalyzer in kmers/kmers/py
+1. count_kmers()
+   - Counts k-mer frequencies per sequence
+   - Builds a global ranking of most frequent k-mers
+2. build_kmer_matrix(top_k)
+  - Builds a matrix of kmer counts:
+      - Rows = sequences
+      - Columns = top k kmers
+3. plot_kmer_heatmap(top_k=8, out_path="results/kmer_heatmap.png")
+  - Creates a heatmap using matplotlib
+  - Automatically saves to results/kmer_heatmap.png
+  - Does not pop up a window (if implemented as save-only)
+
+## 5. Output Files
+After running: python3 main.py -i sequences.fasta -o out.fasta -r s1
+You will have:
+- out.fasta - final multiple sequence alignment
+- mutation_rates.csv
+- results/kmer_heatmap.png
+- results/mutation_rates_png
+
+## 6. Running Tests
+In bash run: pytest
+
+## 7. Project Structure
+20251125_Alignment_take2/
+├── main.py
+├── newu3/
+│   ├── __init__.py
+│   ├── read.py
+│   ├── write.py
+│   ├── num.py
+├── ratez/
+│   ├── __init__.py
+│   ├── bio.py
+│   ├── pd.py
+├── kmers/
+│   ├── __init__.py
+│   ├── kmers.py
+├── tests/
+│   ├── test_newu3_num.py
+│   ├── test_orfs_and_tree.py
+│   ├── test_pd_analyze_and_plot.py
+│   ├── test_read_aln_and_ratescalc.py
+├── results/
+│   ├── kmer_heatmap.png        (generated)
+├── mutation_rates.csv          (generated)
+└── README.md
+
 
 
 
