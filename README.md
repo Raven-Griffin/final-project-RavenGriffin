@@ -53,7 +53,7 @@ From the ORFs:
 - build_tree_dict_from_kmers() constructs a simple progressive guide tree
 - This determines the order in which pairwise alignments are performed
 
-## 3.4 Needleman-Wunsch Alignment
+### 3.4 Needleman-Wunsch Alignment
 Using functions from newu3.num
 - init_mat() - innitalizes scoring matrix
 - fill_matrix() - dynamic programming score fill
