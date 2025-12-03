@@ -97,6 +97,7 @@ You will have:
 In bash run: pytest
 
 ## 7. Project Structure
+```text
 20251125_Alignment_take2/
 ├── main.py
 ├── newu3/
@@ -117,9 +118,10 @@ In bash run: pytest
 │   ├── test_pd_analyze_and_plot.py
 │   ├── test_read_aln_and_ratescalc.py
 ├── results/
-│   ├── kmer_heatmap.png        (generated)
-├── mutation_rates.csv          (generated)
+│   ├── kmer_heatmap.png (generated)
+│   └── mutation_rates.csv (generated)
 └── README.md
+```
 
 
 
