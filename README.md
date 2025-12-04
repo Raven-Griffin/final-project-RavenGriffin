@@ -122,7 +122,10 @@ In bash run: pytest
 │   └── mutation_rates.csv (generated)
 └── README.md
 ```
-
+## 8. AI Usage
+- Testing
+- Debugging
+- Error Handling
 
 
 
