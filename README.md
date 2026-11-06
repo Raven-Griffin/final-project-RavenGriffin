@@ -1,8 +1,7 @@
 # final-project-RavenGriffin
 
 Name: Raven Griffin
-Email: rgriff62@charlotte.edu
-UNCC ID: 801282357
+
 
 
 
